@@ -1,31 +1,39 @@
-const Hello = (props) => {
-  const bornYear = () => {
-    const yearNow = new Date().getFullYear()
-    return yearNow - props.age
-  }
+import { useState } from "react"
 
-  return (
-    <div>
-      <p>Hello {props.name}, you are {props.age} years old</p>
-      <p>So you were probably born {bornYear()}</p>
-    </div>
-  )
-}
 
+
+
+const Button = ({ onClick, text }) => 
+    <button onClick={onClick}>
+      {text}
+    </button>
+
+
+const Display = props => <div>{props.value}</div>
 
 
 const App = () => {
-  const nimi = 'Pekka'
-  const ika = 10
+  const [value, setValue] = useState(20)
+
+  
+
+  const setToValue = newValue => {
+    setValue(newValue)
+  }
+
+  
+
 
   return (
 
   
   <div>
-    <h1>Greetings</h1>
-    <Hello name="joku" age={ika}/>
-    <Hello name="joku toinen" age={ika +5}/>
-    <Hello name={nimi} age={ika}/>
+    <div>
+      <Display value={value}/>
+      <Button onClick={() => setToValue(1000)} text='thousand' />
+      <Button onClick={() => setToValue(0)} text='reset' />
+      <Button onClick={() => setToValue(value+1)} text='increment' />
+    </div>
   </div>
   )
 }
