@@ -1,6 +1,17 @@
 import { useState } from 'react'
 
+const Button = ({onClick, text}) => 
+  <button onClick={onClick}>
+    {text}
+  </button>
+
+ 
+
 const App = () => {
+
+  
+  const startVotes = [0,0,0,0,0,0,0,0]
+
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -13,10 +24,38 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(startVotes)
+ 
+  const getNew = () => setSelected(Math.floor(Math.random() * 8))
+  const vote = () => {
+    const copy = [...votes]
+    copy[selected] += 1
+    setVotes(copy)
+  }
+  const getHighest = () => {
+    return Math.max(...votes)
+  }
+
+  const getIndex = () => votes.indexOf(getHighest())
+
+  //console.log(votes)
+  //console.log("highest: ", highest)
 
   return (
+    
     <div>
-      {anecdotes[selected]}
+      <h1>Anecdote of the day</h1>
+      <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
+      <p>
+      <Button onClick={vote} text="vote" />
+
+      <Button onClick={getNew} text="next anecdote" />
+      </p>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[getIndex()]}</p>
+      <p>has {getHighest()} votes</p>
+      
     </div>
   )
 }
