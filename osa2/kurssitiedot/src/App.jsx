@@ -1,98 +1,89 @@
 import { memo, useState } from "react"
+import Course from "./Course"
 
 const App = () => {
   
-  const course = {
+  const courses = [
+    {
     name: 'Half stack application development',
     id: 1,
     parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      },
+      {
+        name: 'Something something',
+        exercises: 5000,
+        id: 4
+      }
+    ]
+  },
+  {
+  name: 'another course',
+  id: 2,
+  parts: [
     {
-      name: 'Fundamentals of React',
-      exercises: 10,
+      name: 'part one',
+      exercises: 50,
       id: 1
     },
     {
-      name: 'Using props to pass data',
-      exercises: 7,
+      name: 'part two',
+      exercises: 21,
       id: 2
     },
     {
-      name: 'State of a component',
-      exercises: 14,
+      name: 'part three',
+      exercises: 33,
       id: 3
     },
     {
-      name: 'Something something',
-      exercises: 5000,
+      name: 'part four',
+      exercises: 789,
       id: 4
     }
+    
   ]
-}
+  }
+  ]
 
 
 
   
   return (
     <div>
-      <Course course={course}/>      
+      <h1>Web development curriculum</h1>
+      <CourseList courses={courses}/>      
 
     </div>
   )
 }
 
-
-const Course = ({course}) => {
-  
-  const Header = ({course}) => {
-    return (
-      <>
-      <h1>{course.name}</h1>
-      </>
-    )
-  }
-
-  const Part = ({part}) => {
-    return (
-      <>
-      <p>{part.name} {part.exercises}</p>
-      </>
-    )
-  }
-
-  const Total = ({parts}) => {
-
-    const total_exercises = parts.reduce(
-      (acc, current) => acc + current.exercises, 0
-    )
-
-    return (
-      <>
-      <p>Number of exercises: {total_exercises}</p>
-      </>
-    )
-  }
-
-  const Content = ({parts}) => {
-    
-    
-    return (
-      <>
-      {parts.map(part =>
-        <Part key={part.id} part={part}/>
-      )}
-      </>
-    )
-  }
-
+const CourseList = ({courses}) => {
+  console.log(courses)
   return (
-    <div>
-    <Header course={course}/>
-    <Content parts={course.parts}/>
-    <Total parts={course.parts}/>
-    </div>
+    <>
+    {courses.map(course =>
+      <Course key={course.id} course={course}/>
+    )}
+    </>
   )
-
 }
+
+
+
 
 
 
