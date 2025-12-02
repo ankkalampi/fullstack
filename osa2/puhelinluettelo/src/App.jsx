@@ -161,13 +161,31 @@ return(
 )
 }
 
+const removePerson = (id, persons, setPersons) => {
+  personService
+    .remove(id)
+
+  const updatedPersons = persons.filter(person => person.id !== id)
+  setPersons(updatedPersons)
+}
+
+const RemoveButton = ({id}, persons, setPersons) => {
+  console.log(`Removebutton id: `, id)
+  return(
+    <>
+      <button onClick={() => removePerson(id, persons, setPersons)}>Remove</button>
+    </>
+  )
+} 
+
 
 
 const Person = ({person}) => {
-
+  console.log(`person id:`, person.id)
   return (
     <>
-      <p>{person.name} {person.number}</p>
+      
+      <p>{person.name} {person.number} <RemoveButton id={person.id}/></p>
     </>
   )
 }
