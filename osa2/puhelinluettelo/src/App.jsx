@@ -66,7 +66,7 @@ const App = () => {
                       />
         </div>
         <div>
-          <PersonList persons={persons} filter={filter}/>
+          <PersonList persons={persons} filter={filter} setPersons={setPersons}/>
         </div>
         
     </div>
@@ -100,7 +100,7 @@ const FilterForm = ({filter, setFilter}) => {
 
 
 
-const PersonList = ({persons, filter}) => {
+const PersonList = ({persons, filter, setPersons}) => {
 
   const personsToShow = persons.filter((element) =>
       element.name.toLowerCase().includes(filter.toLowerCase()))
@@ -112,7 +112,7 @@ const PersonList = ({persons, filter}) => {
     
       
     {personsToShow.map(person =>
-      <Person key={person.name} person={person}/>
+      <Person key={person.name} person={person} persons={persons} setPersons={setPersons}/>
     )}
     </div>
     
@@ -167,25 +167,41 @@ const removePerson = (id, persons, setPersons) => {
 
   const updatedPersons = persons.filter(person => person.id !== id)
   setPersons(updatedPersons)
+  
+  
 }
 
-const RemoveButton = ({id}, persons, setPersons) => {
+const findPerson = (id, persons) => {
+  const person = persons.find((person) => person.id === id)
+
+  return person.name
+}
+
+const RemoveButton = ({id, persons, setPersons}) => {
   console.log(`Removebutton id: `, id)
   return(
     <>
-      <button onClick={() => removePerson(id, persons, setPersons)}>Remove</button>
+      <button onClick={() => {
+        const name = findPerson(id, persons)
+        if (window.confirm(`Delete ${name}?`)){
+          removePerson(id, persons, setPersons)}
+        else {
+          
+        }}}>Remove</button>
+        
+        
     </>
   )
 } 
 
 
 
-const Person = ({person}) => {
+const Person = ({person, persons, setPersons}) => {
   console.log(`person id:`, person.id)
   return (
     <>
       
-      <p>{person.name} {person.number} <RemoveButton id={person.id}/></p>
+      <p>{person.name} {person.number} <RemoveButton id={person.id} persons={persons} setPersons={setPersons}/></p>
     </>
   )
 }
