@@ -17,9 +17,27 @@ const App = () => {
     }
 
 
-    if (persons.find((entry) => entry.name === newName)){
+    if (persons.find((entry) => {
+      entry.name === newName
+      
 
-      alert(`${newName} is already added to phonebook`)
+        }
+      ))
+      {
+      
+
+      if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new number?`)){
+
+        
+        personService
+          .update(entry.id, updatedObject)
+          .then(returned => {
+            setPersons(persons.concat(returned))
+          })
+      } else {
+        alert("Number is not changed!")
+      }
+      
     } else{
 
       personService
@@ -186,7 +204,7 @@ const RemoveButton = ({id, persons, setPersons}) => {
         if (window.confirm(`Delete ${name}?`)){
           removePerson(id, persons, setPersons)}
         else {
-          
+
         }}}>Remove</button>
         
         
