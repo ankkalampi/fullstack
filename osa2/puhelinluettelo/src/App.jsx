@@ -28,18 +28,13 @@ const App = () => {
 
       if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new number?`)){
 
-        const updatedObject = {
-          name: newName,
-          number: newNumber,
-          id: personObject.id
-        }
+       const updated = await personService.update(foundEntry.id, newNumber)
 
+       setPersons(persons.map(p => 
+        p.id === foundEntry.id ? updated : p
+       ))
         
-        await personService
-          .update(foundEntry.id, updatedObject)
-          .then(returned => {
-            setPersons(persons.concat(returned))
-          })
+    
       } else {
         alert("Number is not changed!")
       }
