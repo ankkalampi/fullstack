@@ -2,33 +2,19 @@
   "persons": [
     {
       "id": "1",
-      "name": "lala",
-      "number": "432432"
-    },
-    {
-      "id": "2",
-      "name": "luuluu",
-      "number": "u49560u5496"
+      "name": "trala",
+      "number": "12345"
     },
     {
       "id": "3",
-      "name": "liillii",
-      "number": "75t84645645"
-    },
+      "name": "jajaj",
+      "number": "52534"
+    }
+  ],
+  "meta": [
     {
-      "id": "4",
-      "name": "erhjgern",
-      "number": "vuu344"
-    },
-    {
-      "id": "5",
-      "name": "lala",
-      "number": "56456"
-    },
-    {
-      "id": "6",
-      "name": "lala",
-      "number": "54364"
+      "lastId": 4,
+      "id": "0"
     }
   ]
 }

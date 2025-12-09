@@ -7,30 +7,36 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [lastId, setLastId] = useState(0)
 
-  const addPerson = (event) => {
+  const addPerson = async (event) => {
     event.preventDefault()
+
+    const meta = await personService.getId()
+    const nextId = meta.lastId
+
     const personObject = {
       name: newName,
       number: newNumber,
-      id: String(persons.length +1)
+      id: String(nextId)
     }
 
-
-    if (persons.find((entry) => {
-      entry.name === newName
-      
-
-        }
-      ))
+    const foundEntry = persons.find((entry) => entry.name === newName)
+    if (foundEntry)
       {
-      
+      //console.log(`GETTING TO IF STATEMENT`)
 
       if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new number?`)){
 
+        const updatedObject = {
+          name: newName,
+          number: newNumber,
+          id: personObject.id
+        }
+
         
-        personService
-          .update(entry.id, updatedObject)
+        await personService
+          .update(foundEntry.id, updatedObject)
           .then(returned => {
             setPersons(persons.concat(returned))
           })
@@ -58,6 +64,12 @@ const App = () => {
       .getAll()
       .then(initialPersons => {
         setPersons(initialPersons)
+      })
+
+    personService
+      .getId()
+      .then(initialLastId => {
+        setLastId(initialLastId)
       })
   }, [])
 
@@ -196,7 +208,7 @@ const findPerson = (id, persons) => {
 }
 
 const RemoveButton = ({id, persons, setPersons}) => {
-  console.log(`Removebutton id: `, id)
+  //console.log(`Removebutton id: `, id)
   return(
     <>
       <button onClick={() => {
@@ -215,7 +227,7 @@ const RemoveButton = ({id, persons, setPersons}) => {
 
 
 const Person = ({person, persons, setPersons}) => {
-  console.log(`person id:`, person.id)
+  //console.log(`person id:`, person.id)
   return (
     <>
       
