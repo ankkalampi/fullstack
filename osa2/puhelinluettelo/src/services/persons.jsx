@@ -24,7 +24,7 @@ const update = (id, newNumber) => {
 }
 
 const remove = (id) => {
-    axios.delete(`${baseUrl}/${id}`)
+    return axios.delete(`${baseUrl}/${id}`)
 }
 
 const getId = () =>{

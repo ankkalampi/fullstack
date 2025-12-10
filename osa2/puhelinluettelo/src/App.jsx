@@ -1,5 +1,5 @@
 import { useState, event, useEffect } from 'react'
-import axios from 'axios'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -7,10 +7,43 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [lastId, setLastId] = useState(0)
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
+
+  const showError = (message) =>{
+      setErrorMessage(message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+
+    }
+
+    const showSuccess = (message) =>{
+      setSuccessMessage(message)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+}
+
+const removePerson = (id, persons, setPersons) => {
+  const name = findPerson(id, persons)
+  personService
+    .remove(id)
+    .then(res => {
+      showSuccess(`Removed ${name}`)
+    })
+
+  const updatedPersons = persons.filter(person => person.id !== id)
+  setPersons(updatedPersons)
+  
+  
+}
+  
 
   const addPerson = async (event) => {
     event.preventDefault()
+
+    
 
     const meta = await personService.getId()
     const nextId = meta.lastId
@@ -21,10 +54,12 @@ const App = () => {
       id: String(nextId)
     }
 
+    
+
     const foundEntry = persons.find((entry) => entry.name === newName)
     if (foundEntry)
       {
-      //console.log(`GETTING TO IF STATEMENT`)
+      
 
       if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new number?`)){
 
@@ -36,7 +71,7 @@ const App = () => {
         
     
       } else {
-        alert("Number is not changed!")
+        showError("Number is not changed!")
       }
       
     } else{
@@ -45,8 +80,8 @@ const App = () => {
         .create(personObject)
         .then(returned => {
           setPersons(persons.concat(returned))
+          showSuccess(`Added ${personObject.name}`)
         })
-
       setNewName('')
       setNewNumber('')
     }
@@ -61,11 +96,7 @@ const App = () => {
         setPersons(initialPersons)
       })
 
-    personService
-      .getId()
-      .then(initialLastId => {
-        setLastId(initialLastId)
-      })
+    
   }, [])
 
   
@@ -74,6 +105,11 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={errorMessage}/>
+      <Notification message={successMessage} error={false}/>
+
+      
+      
       <div>
         <FilterForm filter={filter} setFilter={setFilter}/>
       </div>
@@ -91,7 +127,7 @@ const App = () => {
                       />
         </div>
         <div>
-          <PersonList persons={persons} filter={filter} setPersons={setPersons}/>
+          <PersonList persons={persons} filter={filter} setPersons={setPersons} removePerson={removePerson}/>
         </div>
         
     </div>
@@ -100,6 +136,8 @@ const App = () => {
   )
 
 }
+
+
 
 const FilterForm = ({filter, setFilter}) => {
   const handleFilterChange = (event) => {
@@ -125,7 +163,7 @@ const FilterForm = ({filter, setFilter}) => {
 
 
 
-const PersonList = ({persons, filter, setPersons}) => {
+const PersonList = ({persons, filter, setPersons, removePerson}) => {
 
   const personsToShow = persons.filter((element) =>
       element.name.toLowerCase().includes(filter.toLowerCase()))
@@ -137,7 +175,7 @@ const PersonList = ({persons, filter, setPersons}) => {
     
       
     {personsToShow.map(person =>
-      <Person key={person.name} person={person} persons={persons} setPersons={setPersons}/>
+      <Person key={person.name} person={person} persons={persons} setPersons={setPersons} removePerson={removePerson}/>
     )}
     </div>
     
@@ -186,15 +224,7 @@ return(
 )
 }
 
-const removePerson = (id, persons, setPersons) => {
-  personService
-    .remove(id)
 
-  const updatedPersons = persons.filter(person => person.id !== id)
-  setPersons(updatedPersons)
-  
-  
-}
 
 const findPerson = (id, persons) => {
   const person = persons.find((person) => person.id === id)
@@ -202,7 +232,7 @@ const findPerson = (id, persons) => {
   return person.name
 }
 
-const RemoveButton = ({id, persons, setPersons}) => {
+const RemoveButton = ({id, persons, setPersons, removePerson}) => {
   //console.log(`Removebutton id: `, id)
   return(
     <>
@@ -221,15 +251,17 @@ const RemoveButton = ({id, persons, setPersons}) => {
 
 
 
-const Person = ({person, persons, setPersons}) => {
+const Person = ({person, persons, setPersons, removePerson}) => {
   //console.log(`person id:`, person.id)
   return (
     <>
       
-      <p>{person.name} {person.number} <RemoveButton id={person.id} persons={persons} setPersons={setPersons}/></p>
+      <p className='person'>{person.name} {person.number} <RemoveButton id={person.id} persons={persons} setPersons={setPersons} removePerson={removePerson}/></p>
     </>
   )
 }
+
+
 
 
 
