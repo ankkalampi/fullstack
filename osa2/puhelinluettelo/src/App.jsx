@@ -1,4 +1,4 @@
-import { useState, event, useEffect } from 'react'
+import { useState, event, useEffect , useRef} from 'react'
 import Notification from './components/Notification'
 import personService from './services/persons'
 
@@ -9,19 +9,28 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const timeoutRef = useRef(null)
 
   const showError = (message) =>{
+      if (timeoutRef.current){
+        clearTimeout(timeoutRef.current)
+      }
       setErrorMessage(message)
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setErrorMessage(null)
+        timeoutRef.current = null
       }, 5000)
 
     }
 
     const showSuccess = (message) =>{
+      if (timeoutRef.current){
+        clearTimeout(timeoutRef.current)
+      }
       setSuccessMessage(message)
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setSuccessMessage(null)
+        timeoutRef.current = null
       }, 5000)
 }
 
@@ -31,6 +40,9 @@ const removePerson = (id, persons, setPersons) => {
     .remove(id)
     .then(res => {
       showSuccess(`Removed ${name}`)
+    })
+    .catch(error => {
+      showError(`${name} already removed from server`)
     })
 
   const updatedPersons = persons.filter(person => person.id !== id)
@@ -63,7 +75,14 @@ const removePerson = (id, persons, setPersons) => {
 
       if (window.confirm(`${newName} is already added to the phonebook. Replace the old number with the new number?`)){
 
-       const updated = await personService.update(foundEntry.id, newNumber)
+       const updated = await personService
+                                .update(foundEntry.id, newNumber)
+                                .then(response =>{
+                                  showSuccess(`Phone number of ${newName} updated successfully`)
+                                })
+                                .catch(error =>{
+                                  showError(`${newName} already removed from server`)
+                                })
 
        setPersons(persons.map(p => 
         p.id === foundEntry.id ? updated : p
@@ -105,7 +124,7 @@ const removePerson = (id, persons, setPersons) => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={errorMessage}/>
+      <Notification message={errorMessage} error={true}/>
       <Notification message={successMessage} error={false}/>
 
       
