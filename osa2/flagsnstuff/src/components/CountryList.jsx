@@ -1,8 +1,13 @@
-const CountryList = ({countries, countriesToShow, entry}) => {
+const CountryList = ({countriesToShow, entry, setSelectedCountry, setEntry}) => {
     if (entry === ''){
         return null
     }
 
+    
+    const handleShowCountryButton = (country) =>{
+            setEntry('')
+            setSelectedCountry(country)
+    }
     
 
 
@@ -25,8 +30,9 @@ const CountryList = ({countries, countriesToShow, entry}) => {
             {countriesToShow.map(country => {
                 return (
                     <CountryEntry 
-                        name={country.name.common}
-                        key={country.name.common}/>
+                        country={country}
+                        key={country.name.common}
+                        handleShowCountryButton={handleShowCountryButton}/>
                     
                 )
             })}
@@ -35,10 +41,18 @@ const CountryList = ({countries, countriesToShow, entry}) => {
 }
 
 
-const CountryEntry = ({name}) =>{
+const CountryEntry = ({country, handleShowCountryButton}) =>{
+    
+    
     return (
         <>
-        <p className='countryEntry'>{name}</p>
+        <p className='countryEntry'>
+            {country.name.common}
+            <button 
+                type='button'
+                onClick={() => handleShowCountryButton(country)}
+            >Show</button>
+        </p>
         </>
     )
 }

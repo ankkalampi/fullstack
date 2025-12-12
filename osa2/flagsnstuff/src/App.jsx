@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import CountrySearch from './components/CountrySearch'
-import CountryList from './components/CountryList'
-import CountryInfo from './components/CountryInfo'
 import countryService from './services/countries'
+import CountryContent from './components/CountryContent'
 
 const App = () => {
 
-  const [entry, setEntry] = useState('')
+  
   const [countries, setCountries] = useState([])
-  const [countryList, setCountryList] = useState([])
-  const [countryInfo, setCountryInfo] = useState('')
+  
+  
   
 
   useEffect(() => {
@@ -20,27 +19,16 @@ const App = () => {
       })
   }, [])
 
-  const countriesToShow = countries.filter((element) => {
+  
+  
 
-         return element.name.common.toLowerCase().includes(entry.toLowerCase())
-    })
+  
   
 
   return (
     <div>
-      <CountrySearch 
-          entry={entry}
-          setEntry={setEntry}
-      />
-      <CountryList
-          entry={entry} 
+      <CountryContent
           countries={countries}
-          countriesToShow={countriesToShow}
-      />
-      <CountryInfo
-          countryList={countryList}
-          countryInfo={countryInfo}
-          setCountryInfo={setCountryInfo}
       />
     </div>
   )

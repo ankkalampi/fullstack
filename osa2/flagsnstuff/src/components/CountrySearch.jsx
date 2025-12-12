@@ -1,8 +1,13 @@
 
-const CountrySearch = ({entry, setEntry}) => {
+const CountrySearch = ({entry, setEntry, setSelectedCountry}) => {
     const handleEntryChange = (event) => {
         setEntry(event.target.value)
+        setSelectedCountry(null)
+
+        
     }
+
+        
 
     return(
         <div>
