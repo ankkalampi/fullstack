@@ -21,7 +21,17 @@ const WeatherInfo = ({capital}) => {
             <h3>
                 Weather in {capital}
             </h3>
-            <p>Temperature: {weather?.main?.temp} </p>
+            <p>Temperature {weather?.main?.temp} Celcius</p>
+            <p>
+                {weather?.weather?.[0]?.icon && (
+                    <img
+                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                />
+                )}
+            </p>
+            <p>
+                Wind {weather?.wind?.speed} m/s
+            </p>
         </div>
     );
 };
