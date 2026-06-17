@@ -1,3 +1,5 @@
+import WeatherInfo from './WeatherInfo'
+
 const CountryInfo = ({displayedCountry}) => {
     if (!displayedCountry) {
         return null
@@ -25,6 +27,11 @@ const CountryInfo = ({displayedCountry}) => {
 
             <div>
                 <img src={displayedCountry.flags.png}/>
+            </div>
+            <div>
+                <WeatherInfo
+                    capital={displayedCountry.capital?.[0]}
+                />
             </div>
         </div>
     )
