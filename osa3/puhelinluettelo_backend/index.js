@@ -37,6 +37,17 @@ app.get('/api/persons', (request, response) => {
 })
 
 
+
+app.get('/info', (request, response) => {
+    const count = persons.length
+    const datenow = new Date().toString()
+
+    response.send(`
+        Phonebook has info for ${count} people<br>
+        ${datenow}`)
+})
+
+
 app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const note = persons.find(note => note.id === id)
