@@ -76,16 +76,16 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
-    if (!body.content) {
+    if (!body.name || !body.number) {
         return response.status(400).json({
-            error: 'content missing'
+            error: 'name or number missing'
         })
     }
 
     const note = {
-        content: body.content,
-        important: body.important || false,
-        id: generateId(),
+        name: body.name,
+        number: body.number,
+        id: Math.floor(Math.random() * (Math.floor(1000000) - Math.ceil(0)) + Math.ceil(0))
     }
 
     persons = persons.concat(note)
