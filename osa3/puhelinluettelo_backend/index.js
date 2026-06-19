@@ -7,7 +7,7 @@ const app = express()
 app.use(express.json())
 
 
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :response-time ms :body'))
 
 let persons = [
   {
@@ -32,6 +32,12 @@ let persons = [
   }
 ]
 
+morgan.token('body', (req) => {
+    if (req.method === 'POST' && req.body) {
+        return JSON.stringify(req.body)
+    }
+    return ""
+})
 
 
 app.get('/', (request, response) => {
@@ -88,7 +94,7 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    if (persons.map(person => person.name === body.name)) {
+    if (persons.some(person => person.name === body.name)) {
         return response.status(400).json({
             error: 'name already exists'
         })
