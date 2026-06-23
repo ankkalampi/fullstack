@@ -75,6 +75,7 @@ const removePerson = (id, persons, setPersons) => {
                                 .update(foundEntry.id, newNumber)
                                 .then(response =>{
                                   showSuccess(`Phone number of ${newName} updated successfully`)
+                                  return response
                                 })
                                 .catch(error =>{
                                   showError(`${newName} already removed from server`)
@@ -96,6 +97,9 @@ const removePerson = (id, persons, setPersons) => {
         .then(returned => {
           setPersons(persons.concat(returned))
           showSuccess(`Added ${personObject.name}`)
+        })
+        .catch(error => {
+          showError(error.response.data.error)
         })
       setNewName('')
       setNewNumber('')
