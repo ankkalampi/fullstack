@@ -1,4 +1,6 @@
+require('dotenv').config()
 const express = require('express')
+const Entry = require('./models/entry')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
@@ -49,7 +51,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Entry.find({}).then((entry) => {
+        response.json(entry)
+    })
 })
 
 
@@ -65,14 +69,9 @@ app.get('/info', (request, response) => {
 
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const note = persons.find(note => note.id === id)
-
-    if (note) {
-        response.json(note)
-    } else {
-        response.status(404).end()
-    }
+    Entry.findById(request.params.id).then(entry => {
+        response.json(entry)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -98,21 +97,16 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    if (persons.some(person => person.name === body.name)) {
-        return response.status(400).json({
-            error: 'name already exists'
-        })
-    }
 
-    const note = {
+    const entry = new Entry({
         name: body.name,
-        number: body.number,
-        id: Math.floor(Math.random() * (Math.floor(1000000) - Math.ceil(0)) + Math.ceil(0))
-    }
+        number: body.number
+    })
 
-    persons = persons.concat(note)
+    entry.save().then(savedEntry => {
+        response.json(savedEntry)
+    })
 
-    response.json(note)
 })
 
 const PORT = process.env.PORT || 3001
