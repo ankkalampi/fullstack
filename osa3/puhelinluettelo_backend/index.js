@@ -59,12 +59,16 @@ app.get('/api/persons', (request, response) => {
 
 
 app.get('/info', (request, response) => {
-    const count = persons.length
-    const datenow = new Date().toString()
+    Entry.countDocuments({})
+        .then(count => {
+            const datenow = new Date().toString()
+            response.send(`
+                Phonebook has info for ${count} people<br>
+                ${datenow}`)
+        })
+        .catch(error => next(error))
 
-    response.send(`
-        Phonebook has info for ${count} people<br>
-        ${datenow}`)
+    
 })
 
 
