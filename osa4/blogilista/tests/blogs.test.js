@@ -90,26 +90,102 @@ test('correct number of blogs returned', async () => {
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
-    .expect((response) => response.body.length === 6)
+    .expect(response => {
+        if (response.body.length !== 6) {
+            throw new Error('')
+        }
+      })
 })
 
 test('blog idenfication field is named id', async () => {
+  await Blog.deleteMany({})
+ 
+  for (const blog of blogs) {
+    const blogObj = new Blog(blog)
+    await blogObj.save()
+  }
+  await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+    .expect(response => {
+    response.body.forEach(blog => {
+      if (blog.id === undefined) {
+        throw new Error('')
+      }
+
+      if (blog._id !== undefined) {
+        throw new Error('')
+      }
+
+    })
+  }) 
+})
+
+test('adding blog increases number of blogs by 1', async () => {
+    const testBlog = {
+        title: "",
+        author: "",
+        url: "",
+        likes: 0
+    }
+
+    await Blog.deleteMany({})
+
+    const blogsStart = await api.get('/api/blogs')
+
     await api
-      .get('/api/blogs')
-      .expect(200)
+      .post('/api/blogs')
+      .send(testBlog)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
-      .expect(response => {
-        response.body.forEach(blog => {
-          if (blog.id === undefined) {
-            throw new Error('')
-          }
+     
 
-          if (blog._id !== undefined) {
-            throw new Error('')
-          }
+    const blogsEnd = await api.get('/api/blogs')
 
-        })
-      }) 
+    if (blogsEnd.body.length !== blogsStart.body.length + 1) {
+        throw new Error('')
+    }
+
+})
+
+test('adding blog creates blog in correct form', async () => {
+    const testBlog = {
+        title: "",
+        author: "",
+        url: "",
+        likes: 0
+    }
+
+})
+
+test('no likes value set to 0', async () => {
+    const testBlog = {
+        title: "",
+        author: "",
+        url: ""
+    }
+
+})
+
+test('400 if title or url not given', async () => {
+    const testBlogNoTitle = {
+        author: "",
+        url: "",
+        likes: 0
+    }
+
+    const testBlogNoUrl = {
+        title: "",
+        author: "",
+        likes: 0
+    }
+
+    const testBlogNeither = {
+        author: "",
+        likes: 0
+    }
+
 })
 
 
