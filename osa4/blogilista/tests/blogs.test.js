@@ -7,6 +7,11 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 
+test.before(async () => {
+    await mongoose.connect(process.env.TEST_MONGODB_URI, {
+        family: 4
+    })
+})
 
 const blogs = [
     {
@@ -87,6 +92,26 @@ test('correct number of blogs returned', async () => {
     .expect('Content-Type', /application\/json/)
     .expect((response) => response.body.length === 6)
 })
+
+test('blog idenfication field is named id', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect(response => {
+        response.body.forEach(blog => {
+          if (blog.id === undefined) {
+            throw new Error('')
+          }
+
+          if (blog._id !== undefined) {
+            throw new Error('')
+          }
+
+        })
+      }) 
+})
+
 
 
 
